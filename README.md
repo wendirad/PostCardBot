@@ -60,11 +60,11 @@ DATABASE_NAME=postcardbot
 ```bash
 mkdir ../logs
 ```
-2. Write log file name in .env file next to `LOG_FILE=` and save it.
+2. Write log file name in .env file next to `LOG_FILE_NAME=` and save it.
 ```ini
 # .env file
 
-LOG_FILE=postcardbot.log
+LOG_FILE_NAME=postcardbot.log
 ```
 4. Write your notifier name in .env file next to NOTIFIER= and save it (for example: `NOTIFIER=gmail`).
 ```ini
@@ -98,7 +98,7 @@ NOTIFICATION_RECIPIENT=recipientemail@mail.com
 API_TOKEN=123456789:ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
 DATABASE_URL=mongodb+srv://user:<password>@cluster0-xxxx.mongodb.net/database
 DATABASE_NAME=postcardbot
-LOG_FILE=postcardbot.log
+LOG_FILE_NAME=postcardbot.log
 NOTIFIER=gmail
 NOFIER_EMAIL=example@mail.com
 NOTIFIER_PASSWORD=examplepassword
@@ -115,13 +115,13 @@ python3 -m PostCardBot
 - `API_TOKEN` - Telegram bot token.
 - `DATABASE_URL` - MongoDB dns link.
 - `DATABASE_NAME` - MongoDB database name.
-- `LOG_FILE` - Log file name.
+- `LOG_FILE_NAME` - Log file name.
 - `NOTIFIER` - Notifier name.
 - `NOTIFIER_EMAIL` - Notifier email.
 - `NOTIFIER_PASSWORD` - Notifier password.
 - `NOTIFICATION_RECIPIENT` - Notification recipient email.
 - `LOG_ROTATION_SIZE` - Log rotation size.
-
+- `DATABASE_SELECTION_TIMEOUT` - Database selection timeout. Default: 10 seconds.
 
 ## **License**
 <!-- Apache -->
