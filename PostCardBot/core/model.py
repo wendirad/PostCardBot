@@ -14,9 +14,6 @@ class BaseModel:
         cls.meta = cls.Meta()
         cls.meta.model = cls
         cls.meta.model_name = cls.__name__
-        cls.meta.fields = [cls.meta.pk_field]
-        for field in cls.__annotations__:
-            cls.meta.fields.append(field)
 
     class Meta:
         """
@@ -30,7 +27,7 @@ class BaseModel:
         Initialize the model.
         """
         for field in self.meta.fields:
-            setattr(self, field, kwargs.get(field, None))
+            setattr(self, field, kwargs.get(field, getattr(self, field, None)))
 
     def __repr__(self):
         """
@@ -56,6 +53,12 @@ class BaseModel:
         """
         return json.dumps(self.to_dict())
 
+    def to_python(self):
+        """
+        Convert the model to a Python dictionary.
+        """
+        return self.to_dict()
+
     @classmethod
     def from_dict(cls, data):
         """
@@ -76,16 +79,16 @@ class DatabaseModel(BaseModel):
     Database model for the PostCardBot.
     """
 
-    __annotations__ = {}
-
     db = Database()
 
-    def __init__(self, pk=None, **kwargs):
+    def __init__(self, **kwargs):
         """
         Initialize the model.
         """
         super().__init__(**kwargs)
         self.collection = self.db.get_collection(self.meta.collection_name)
+        if self.pk_field not in self.meta.fields:
+            self.meta.fields.append(self.pk_field)
 
     async def save(self):
         """
@@ -94,7 +97,7 @@ class DatabaseModel(BaseModel):
         data = self.to_dict()
         pk = data.pop(self.pk_field, None)
         await self.collection.update_one(
-            {self.pk_field: pk}, {"$set": self.to_dict()}, upsert=True
+            {self.pk_field: pk}, {"$set": data}, upsert=True
         )
 
     async def delete(self):
@@ -142,7 +145,7 @@ class DatabaseModel(BaseModel):
         """
         Get the primary key of the model.
         """
-        return self._id
+        return getattr(self, self.pk_field, None)
 
     @property
     def pk_field(self):
@@ -154,3 +157,4 @@ class DatabaseModel(BaseModel):
     class Meta:
         pk_field = "_id"
         collection_name = None
+        fields = []
