@@ -126,6 +126,17 @@ class DatabaseModel(BaseModel):
         data = await cls.collection.find(kwargs)
         return [cls.from_dict(d) for d in data]
 
+    @classmethod
+    async def get_or_create(cls, **kwargs):
+        """
+        Get the model from the database or create a new one.
+        """
+        data = await cls.collection.find_one(kwargs)
+        if data:
+            return cls.from_dict(data)
+        else:
+            return cls(**kwargs)
+
     @property
     def pk(self):
         """
