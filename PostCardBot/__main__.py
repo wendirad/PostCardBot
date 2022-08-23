@@ -14,6 +14,9 @@ storage = MemoryStorage()
 bot = Bot(token=config.API_TOKEN)
 dp = Dispatcher(bot, storage=storage)
 
+# Setup the middleware
+dp.middleware.setup(config.i18n)
+
 logger.info("Bot start polling")
 executor.start_polling(dp, skip_updates=True)
 logger.info("Bot stopped polling")

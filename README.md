@@ -122,6 +122,7 @@ python3 -m PostCardBot
 - `NOTIFICATION_RECIPIENT` - Notification recipient email.
 - `LOG_ROTATION_SIZE` - Log rotation size.
 - `DATABASE_SELECTION_TIMEOUT` - Database selection timeout. Default: 10 seconds.
+- `LOCALE` - Default locale. Default: `en`.
 
 ## **License**
 <!-- Apache -->

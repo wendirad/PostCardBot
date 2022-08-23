@@ -8,6 +8,8 @@ from decouple import config
 from loguru import logger
 from notifiers.logging import NotificationHandler
 
+from PostCardBot.core.middlewares import PostCardBotI18nMiddleware
+
 # Root directory of the project
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
@@ -53,3 +55,13 @@ logger.add(
     ),
     level="ERROR",
 )
+
+# Localization
+
+LOCALE = config("LOCALE", default="en")
+
+I18N_DOMAIN = "PostCardBot"
+
+LOCALE_PATH = ROOT_DIR.parent / "locale"
+
+i18n = PostCardBotI18nMiddleware(I18N_DOMAIN, LOCALE_PATH, default=LOCALE)
