@@ -47,7 +47,7 @@ class Database(SingletonClass):
         logger.info("Getting database for database.")
         return self.get_client().get_database(config.DATABASE_NAME)
 
-    async def get_collection(self, collection_name):
+    def get_collection(self, collection_name):
         """
         Get the collection for the database.
         """
