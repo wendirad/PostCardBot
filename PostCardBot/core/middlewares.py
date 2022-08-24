@@ -29,16 +29,12 @@ class UserMiddleware(BaseMiddleware):
     """Middleware for the PostCardBot User."""
 
     async def trigger(self, action: str, args: Tuple[Any]) -> None:
-        """
-        Update user while user interacts with the bot.
+        """Update user while user interacts with the bot."""
 
-        :param action:
-        :param args:
-        :return:
-        """
         from PostCardBot.models.user import User
 
-        current_user = types.User.get_current()
-        if current_user is not None:
-            await User(**current_user.to_python()).save()
-        return True
+        if action == "process_message":
+            current_user = types.User.get_current()
+            if current_user is not None:
+                await User(**current_user.to_python()).save()
+            return True
