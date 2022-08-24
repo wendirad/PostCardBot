@@ -12,7 +12,7 @@ from PostCardBot.core.utils import load_handlers
 storage = MemoryStorage()
 
 # Initialize bot and dispatcher
-bot = Bot(token=config.API_TOKEN)
+bot = Bot(token=config.API_TOKEN, parse_mode="MarkdownV2")
 dp = Dispatcher(bot, storage=storage)
 
 # Setup the middleware
