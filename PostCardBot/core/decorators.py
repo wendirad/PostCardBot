@@ -1,39 +1,68 @@
 """Decorators for the PostCardBot."""
 
-import functools
-
-from loguru import logger
+from aiogram import Dispatcher
 
 
-async def message_handler(func, *d_args, **d_kwargs):
-    """
-    Decorator for message handlers.
-    """
+class Handler:
 
-    @functools.wraps(func)
-    async def wrapper(self, message, *args, **kwargs):
+    dp = Dispatcher.get_current()
+
+    @classmethod
+    def message_handler(
+        cls,
+        *custom_filters,
+        commands=None,
+        regexp=None,
+        content_types=None,
+        state=None,
+        run_task=None,
+        **kwargs,
+    ):
         """
-        Wrapper for message handlers.
+        Decorator for message handlers.
         """
-        self.dp.register_message_handler(func, *d_args, **d_kwargs)
-        logger.info(f"Message handler: {func.__name__}")
-        return await func(self, message, *args, **kwargs)
 
-    return wrapper
+        def decorator(callback):
+            cls.dp.register_message_handler(
+                callback,
+                *custom_filters,
+                commands=commands,
+                regexp=regexp,
+                content_types=content_types,
+                state=state,
+                run_task=run_task,
+                **kwargs,
+            )
+            return staticmethod(callback)
 
+        return decorator
 
-async def callback_query_handler(func, *d_args, **d_kwargs):
-    """
-    Decorator for callback query handlers.
-    """
-
-    @functools.wraps(func)
-    async def wrapper(self, callback_query, *args, **kwargs):
+    @classmethod
+    def callback_query_handler(
+        cls,
+        *custom_filters,
+        commands=None,
+        regexp=None,
+        content_types=None,
+        state=None,
+        run_task=None,
+        **kwargs,
+    ):
         """
-        Wrapper for callback query handlers.
+        Decorator for callback query handlers.
         """
-        self.dp.register_callback_query_handler(func, *d_args, **d_kwargs)
-        logger.info(f"Callback query handler: {func.__name__}")
-        return await func(self, callback_query, *args, **kwargs)
 
-    return wrapper
+        def decorator(callback):
+            cls.dp.register_callback_query_handler(
+                callback,
+                *custom_filters,
+                commands=commands,
+                regexp=regexp,
+                content_types=content_types,
+                state=state,
+                run_task=run_task,
+                **kwargs,
+            )
+            return staticmethod(callback)
+
+        return decorator
