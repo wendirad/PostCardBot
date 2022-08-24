@@ -16,7 +16,8 @@ bot = Bot(token=config.API_TOKEN)
 dp = Dispatcher(bot, storage=storage)
 
 # Setup the middleware
-dp.middleware.setup(config.i18n)
+for middleware in config.middlewares:
+    dp.middleware.setup(middleware)
 
 # Register handlers
 load_handlers(bot, dp)

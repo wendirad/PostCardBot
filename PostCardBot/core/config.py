@@ -8,7 +8,10 @@ from decouple import config
 from loguru import logger
 from notifiers.logging import NotificationHandler
 
-from PostCardBot.core.middlewares import PostCardBotI18nMiddleware
+from PostCardBot.core.middlewares import (
+    PostCardBotI18nMiddleware,
+    UserMiddleware,
+)
 
 # Root directory of the project
 
@@ -65,3 +68,5 @@ I18N_DOMAIN = "PostCardBot"
 LOCALE_PATH = ROOT_DIR.parent / "locale"
 
 i18n = PostCardBotI18nMiddleware(I18N_DOMAIN, LOCALE_PATH, default=LOCALE)
+
+middlewares = [i18n, UserMiddleware()]
