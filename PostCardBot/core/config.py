@@ -67,6 +67,13 @@ I18N_DOMAIN = "PostCardBot"
 
 LOCALE_PATH = ROOT_DIR.parent / "locale"
 
+LANGUAGES = (
+    ("en", "🇺🇸 English"),
+    ("am", "🇪🇹 አማርኛ"),
+)
+
+# Middlewares
+
 i18n = PostCardBotI18nMiddleware(I18N_DOMAIN, LOCALE_PATH, default=LOCALE)
 
 middlewares = [i18n, UserMiddleware()]
