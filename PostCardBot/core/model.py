@@ -26,6 +26,7 @@ class BaseModel:
         """
         Initialize the model.
         """
+        self.kwargs = kwargs
         for field in self.meta.fields:
             setattr(self, field, kwargs.get(field, getattr(self, field, None)))
 
@@ -94,7 +95,11 @@ class DatabaseModel(BaseModel):
         """
         Save the model to the database.
         """
-        data = self.to_dict()
+        data = {
+            key: value
+            for key, value in self.to_dict().items()
+            if key in self.kwargs
+        }
         pk = data.pop(self.pk_field, None)
         await self.collection.update_one(
             {self.pk_field: pk}, {"$set": data}, upsert=True
