@@ -126,7 +126,7 @@ python3 -m PostCardBot
 
 ## **License**
 <!-- Apache -->
-<a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0" </a>
+<a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0 </a>
 
 
 ## **Brought to you by**
