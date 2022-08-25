@@ -1,9 +1,12 @@
 """Decorators for the PostCardBot."""
 
-from aiogram import Dispatcher
+import functools
+
+from aiogram import Dispatcher, types
 
 
 class Handler:
+    """Handler class for the bot."""
 
     dp = Dispatcher.get_current()
 
@@ -66,3 +69,37 @@ class Handler:
             return staticmethod(callback)
 
         return decorator
+
+
+def admin_only(callback):
+    """
+    Decorator for admin only handlers.
+    """
+
+    @functools.wraps(callback)
+    async def wrapper(message: types.Message, **kwargs):
+        """
+        Admin only wrapper.
+        """
+
+        if message.from_user.is_superuser or message.from_user.is_admin:
+            return await callback(message, **kwargs)
+
+    return wrapper
+
+
+def superuser_only(callback):
+    """
+    Decorator for superuser only handlers.
+    """
+
+    @functools.wraps(callback)
+    async def wrapper(message: types.Message, **kwargs):
+        """
+        Superuser only wrapper.
+        """
+
+        if message.from_user.is_superuser:
+            return await callback(message, **kwargs)
+
+    return wrapper
