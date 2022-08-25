@@ -56,11 +56,7 @@ DATABASE_NAME=postcardbot
 ```
 
 ### Step 5: **Configure logging 📋**
-1. Create log directory called `logs` in parent directory (back one level).
-```bash
-mkdir ../logs
-```
-2. Write log file name in .env file next to `LOG_FILE_NAME=` and save it.
+1. Write log file name in .env file next to `LOG_FILE_NAME=` and save it.
 ```ini
 # .env file
 
@@ -105,7 +101,13 @@ NOTIFIER_PASSWORD=examplepassword
 NOTIFICATION_RECIPIENT=recipientemail@mail.com
 ```
 
-### Step 6: **Run PostCardBot 🚀**
+### Step 6: **Compiling Localization Files 📋**
+1. Compile localization files.
+```bash
+pybabel compile -d locale -D PostCardBot
+```
+
+### Step 7: **Run PostCardBot 🚀**
 1. Run PostCardBot.
 ```bash
 python3 -m PostCardBot
@@ -124,12 +126,11 @@ python3 -m PostCardBot
 - `DATABASE_SELECTION_TIMEOUT` - Database selection timeout. Default: 10 seconds.
 - `LOCALE` - Default locale. Default: `en`.
 
+
 ## **License**
 <!-- Apache -->
 <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0 </a>
 
-
-## **Brought to you by**
 
 <p align="center">
   <img width="150" height="150" src="https://www.backostech.com/wp-content/uploads/2022/08/cropped-BackosLogo.png">

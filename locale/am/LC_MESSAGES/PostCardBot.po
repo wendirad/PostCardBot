@@ -1,0 +1,221 @@
+# Amharic translations for PROJECT.
+# Copyright (C) 2022 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2022-08-25 20:23+0300\n"
+"PO-Revision-Date: 2022-08-24 07:17+0300\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: am\n"
+"Language-Team: am <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.1\n"
+
+#: PostCardBot/handlers/admin_panel.py:22
+#: PostCardBot/handlers/admin_panel.py:61
+msgid "🔐 Admin panel"
+msgstr "🔐 የአስተዳዳሪ ፓነል"
+
+#: PostCardBot/handlers/admin_panel.py:23
+#, fuzzy
+msgid "📦 Postcards"
+msgstr "📎 የእኔ ፖስትካርዶች"
+
+#: PostCardBot/handlers/admin_panel.py:24
+msgid "👥 Users"
+msgstr ""
+
+#: PostCardBot/handlers/admin_panel.py:25 PostCardBot/handlers/stats.py:29
+msgid "📊 Stats"
+msgstr ""
+
+#: PostCardBot/handlers/admin_panel.py:26
+#: PostCardBot/handlers/administrator.py:23
+msgid "👤 Administrators"
+msgstr ""
+
+#: PostCardBot/handlers/admin_panel.py:27 PostCardBot/handlers/main_menu.py:30
+#: PostCardBot/handlers/settings.py:23
+msgid "🔙🏠 Main menu"
+msgstr ""
+
+#: PostCardBot/handlers/admin_panel.py:28
+#: PostCardBot/handlers/administrator.py:22 PostCardBot/handlers/stats.py:30
+#, fuzzy
+msgid "🔙🔐 Admin panel"
+msgstr "🔐 የአስተዳዳሪ ፓነል"
+
+#: PostCardBot/handlers/admin_panel.py:76 PostCardBot/handlers/stats.py:77
+msgid "Users"
+msgstr ""
+
+#: PostCardBot/handlers/admin_panel.py:90 PostCardBot/handlers/stats.py:96
+#, fuzzy
+msgid "Postcards"
+msgstr "📎 የእኔ ፖስትካርዶች"
+
+#: PostCardBot/handlers/administrator.py:38
+msgid "Administrators"
+msgstr ""
+
+#: PostCardBot/handlers/main_menu.py:26
+msgid "📬 Send postcard"
+msgstr "📬 ፖስትካርድ ላክ"
+
+#: PostCardBot/handlers/main_menu.py:27
+msgid "📎 My postcards"
+msgstr "📎 የእኔ ፖስትካርዶች"
+
+#: PostCardBot/handlers/main_menu.py:28
+msgid "💡 Help"
+msgstr "💡 እርዳታ"
+
+#: PostCardBot/handlers/main_menu.py:29
+msgid "📖 About"
+msgstr "📖 ስለ"
+
+#: PostCardBot/handlers/main_menu.py:37
+#, fuzzy
+msgid ""
+"👋 Hello `{first_name}`\n"
+"\n"
+"Welcome to ✉️📮 \\- {bot_name}\\! \\- 📬🏠\\.\n"
+"{bot_link} is a Telegram bot, that provided simple and fun postcard "
+"serivce for user\\. Select postcard and share with your friends Easy\\. "
+"right? 😉\n"
+"\n"
+"If you are new, press `Help` to check available options\\.Brought To You "
+"By: {organazation_link}"
+msgstr ""
+"👋 ሰላም `{first_name}` \n"
+"\n"
+"እንኳን ወደ ✉️📮 \\- {bot_name} \\- 📬🏠 በደህና መጡ\\!\n"
+"{bot_link} ቀላል እና አዝናኝ የፖስታ ካርድ አገልግሎት ለተጠቃሚ የሚሰጥ የቴሌግራም ቦት ነው። የፖስታ ካርድ "
+"ይምረጡ እና ቀላል ለጓደኛዎ ያካፍሉ። 😉\n"
+"\n"
+"አዲስ ከሆንክ ያሉትን አማራጮች ለመፈተሽ `Help` ተጫን።\n"
+"\n"
+"በ {organazation_link} የቀረበ"
+
+#: PostCardBot/handlers/main_menu.py:49 PostCardBot/handlers/main_menu.py:99
+msgid "Backos Technologies"
+msgstr "ባኮስ ቴክኖሎጂስ "
+
+#: PostCardBot/handlers/main_menu.py:75
+msgid "🏠 Main menu"
+msgstr ""
+
+#: PostCardBot/handlers/main_menu.py:90
+msgid ""
+"🅰️🅱️🅾️⛎➕\n"
+"\n"
+"At Backos Technologies we believe that we can bring the greatness that "
+"our country had in the past by solving social, economic and political "
+"problems using modern technologies\\.\n"
+"\n"
+"This bot is developed by {organazation_link} and is licensedunder the "
+"{license_link} license\\.\n"
+"\n"
+msgstr ""
+
+#: PostCardBot/handlers/main_menu.py:102
+msgid "Apache License 2.0"
+msgstr ""
+
+#: PostCardBot/handlers/main_menu.py:112
+msgid ""
+"♓️3⃣🕒🅿️\n"
+"\n"
+"*Send postcard*\n"
+"Send postcard to your friends\\.\n"
+"\n"
+"*My postcards*\n"
+"Check your postcards\\.\n"
+"\n"
+"*Settings*\n"
+"Change settings\\.\n"
+"\n"
+"*Help*\n"
+"Check available options\\.\n"
+"\n"
+"*About*\n"
+"Check bot information\\."
+msgstr ""
+
+#: PostCardBot/handlers/main_menu.py:127
+msgid ""
+"\n"
+"\n"
+"*Admin panel*\n"
+"Access admin panel\\.\n"
+"\n"
+msgstr ""
+
+#: PostCardBot/handlers/settings.py:24
+msgid "⚙️ Settings"
+msgstr "⚙️ ቅንብሮች"
+
+#: PostCardBot/handlers/settings.py:25
+msgid "🌐 Change language"
+msgstr ""
+
+#: PostCardBot/handlers/settings.py:41
+#, fuzzy
+msgid "Settings"
+msgstr "⚙️ ቅንብሮች"
+
+#: PostCardBot/handlers/settings.py:57
+msgid "Select language"
+msgstr ""
+
+#: PostCardBot/handlers/settings.py:72
+msgid "Your language preference has been changed."
+msgstr "የቋንቋ ምርጫዎ ተቀይሯል።"
+
+#: PostCardBot/handlers/stats.py:26
+msgid "👥📈 Users"
+msgstr ""
+
+#: PostCardBot/handlers/stats.py:27
+msgid "👤📈 Administrators"
+msgstr ""
+
+#: PostCardBot/handlers/stats.py:28
+#, fuzzy
+msgid "📦📈 Postcards"
+msgstr "📎 የእኔ ፖስትካርዶች"
+
+#: PostCardBot/handlers/stats.py:48
+msgid "Stats"
+msgstr ""
+
+#: PostCardBot/handlers/stats.py:66
+msgid "Total users: {}"
+msgstr ""
+
+#: PostCardBot/handlers/stats.py:76
+msgid "Users by date"
+msgstr ""
+
+#: PostCardBot/handlers/stats.py:78
+msgid "Date"
+msgstr ""
+
+#: PostCardBot/handlers/stats.py:89
+msgid "Admins"
+msgstr ""
+
+#~ msgid ""
+#~ "This bot is developed by "
+#~ "{organazation_link} and is licensed under "
+#~ "the {license_link} license\\.\n"
+#~ "\n"
+#~ msgstr ""
+
