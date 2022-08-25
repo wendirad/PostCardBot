@@ -38,7 +38,7 @@ class MainMenuHandler(BaseHandler):  # noqa: N801
             "👋 Hello `{first_name}`\n\nWelcome to ✉️📮 \- {bot_name}\! \- 📬🏠\."
             "\n{bot_link} is a Telegram bot, that provided simple and fun "
             "postcard serivce for user\. Select postcard and share with your "
-            "friedns Easy\. right? 😉\n\n"
+            "friends Easy\. right? 😉\n\n"
             "If you are new, press `Help` to check available options\."
             "Brought To You By: {organazation_link}"
         ).format(
