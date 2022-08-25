@@ -8,7 +8,4 @@ def load_handlers(bot, dp):
 
     Dispatcher.set_current(dp)
 
-    from PostCardBot.handlers import __all__ as handlers
-
-    for handler in handlers:
-        handler.register(bot, dp)
+    import PostCardBot.handlers  # noqa: F401
