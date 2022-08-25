@@ -1,6 +1,8 @@
 """Core model for the PostCardBot."""
 
+
 import json
+from datetime import datetime
 
 from PostCardBot.core.db import Database
 
@@ -28,7 +30,14 @@ class BaseModel:
         """
         self.kwargs = kwargs
         for field in self.meta.fields:
-            setattr(self, field, kwargs.get(field, getattr(self, field, None)))
+            value = kwargs.get(field)
+            if value is None:
+                default = getattr(self, field, None)
+                if callable(default):
+                    value = default()
+                else:
+                    value = default
+            setattr(self, field, value)
 
     def __repr__(self):
         """
@@ -101,9 +110,26 @@ class DatabaseModel(BaseModel):
             if key in self.kwargs
         }
         pk = data.pop(self.pk_field, None)
+        defaults = {
+            key: value
+            for key, value in self.to_dict().items()
+            if key not in self.kwargs
+        }
         await self.collection.update_one(
-            {self.pk_field: pk}, {"$set": data}, upsert=True
+            {self.pk_field: pk},
+            {
+                "$set": data,
+                "$currentDate": {
+                    "lastModified": True,
+                },
+                "$setOnInsert": {
+                    **defaults,
+                    "created": datetime.utcnow(),
+                },
+            },
+            upsert=True,
         )
+        return await self.get()
 
     async def delete(self):
         """
@@ -116,15 +142,25 @@ class DatabaseModel(BaseModel):
         Get the model from the database.
         """
         data = await self.collection.find_one({self.pk_field: self.pk})
-        return self.from_dict(data)
+        if data:
+            return self.from_dict(data)
 
     @classmethod
     async def all(cls):
         """
         Get all models from the database.
         """
-        data = await cls.collection.find({})
-        return [cls.from_dict(d) for d in data]
+        data = cls.db.get_collection(cls.meta.collection_name).find({})
+        return [cls.from_dict(d) async for d in data]
+
+    @classmethod
+    async def count(cls):
+        """
+        Get the number of models in the database.
+        """
+        return await cls.db.get_collection(
+            cls.meta.collection_name
+        ).count_documents({})
 
     @classmethod
     async def filter(cls, **kwargs):
@@ -134,16 +170,16 @@ class DatabaseModel(BaseModel):
         data = await cls.collection.find(kwargs)
         return [cls.from_dict(d) for d in data]
 
-    @classmethod
-    async def get_or_create(cls, **kwargs):
+    async def get_or_create(self, **kwargs):
         """
         Get the model from the database or create a new one.
         """
-        data = await cls.collection.find_one(kwargs)
-        if data:
-            return cls.from_dict(data)
+
+        document = await self.get()
+        if document:
+            return document
         else:
-            return cls(**kwargs)
+            return await self.save()
 
     @property
     def pk(self):
