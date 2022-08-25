@@ -16,7 +16,7 @@ class PostCardBotI18nMiddleware(I18nMiddleware):
 
         current_user = types.User.get_current()
         if current_user is not None:
-            user = await User(id=current_user.id).get()
+            user = await User(id=current_user.id).get_or_create()
             locale = user.locale if user else None
             if locale and locale.language in self.locales:
                 *_, data = args
@@ -36,5 +36,8 @@ class UserMiddleware(BaseMiddleware):
         if action == "process_message":
             current_user = types.User.get_current()
             if current_user is not None:
-                await User(**current_user.to_python()).save()
+                user = await User(**current_user.to_python(), is_active=True).save()
+                current_user.is_admin = user.is_admin
+                current_user.is_superuser = user.is_superuser
+                current_user.is_active = user.is_active
             return True
