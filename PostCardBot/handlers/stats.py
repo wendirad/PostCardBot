@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 from PostCardBot.core import config
 from PostCardBot.core.decorators import Handler, admin_only, superuser_only
 from PostCardBot.core.handlers import BaseHandler
-from PostCardBot.models import User
+from PostCardBot.core.model import User
 
 _ = config.i18n.gettext
 __ = config.i18n.lazy_gettext

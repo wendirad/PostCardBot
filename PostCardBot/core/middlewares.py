@@ -12,7 +12,7 @@ class PostCardBotI18nMiddleware(I18nMiddleware):
     async def get_user_locale(
         self, action: str, args: Tuple[Any]
     ) -> Optional[str]:
-        from PostCardBot.models.user import User
+        from PostCardBot.core.model import User
 
         current_user = types.User.get_current()
         if current_user is not None:
@@ -31,7 +31,7 @@ class UserMiddleware(BaseMiddleware):
     async def trigger(self, action: str, args: Tuple[Any]) -> None:
         """Update user while user interacts with the bot."""
 
-        from PostCardBot.models.user import User
+        from PostCardBot.core.model import User
 
         if action == "process_message":
             current_user = types.User.get_current()

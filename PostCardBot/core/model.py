@@ -1,10 +1,13 @@
 """Core model for the PostCardBot."""
 
 
+import babel
+
 import json
 from datetime import datetime
 
 from PostCardBot.core.db import Database
+from aiogram.types import User as TelegramUser
 
 
 class BaseModel:
@@ -96,9 +99,16 @@ class DatabaseModel(BaseModel):
         Initialize the model.
         """
         super().__init__(**kwargs)
-        self.collection = self.db.get_collection(self.meta.collection_name)
         if self.pk_field not in self.meta.fields:
             self.meta.fields.append(self.pk_field)
+
+    def __new__(cls, *args, **kwargs):
+        """
+        Create a new model.
+        """
+        if not hasattr(cls, "collection"):
+            cls.collection = cls.db.get_collection(cls.meta.collection_name)
+        return super().__new__(cls)
 
     async def save(self):
         """
@@ -150,7 +160,9 @@ class DatabaseModel(BaseModel):
         """
         Get all models from the database.
         """
-        data = cls.db.get_collection(cls.meta.collection_name).find({})
+        if not hasattr(cls, "collection"):
+            cls.collection = cls.db.get_collection(cls.meta.collection_name)
+        data = cls.collection.find({})
         return [cls.from_dict(d) async for d in data]
 
     @classmethod
@@ -199,3 +211,52 @@ class DatabaseModel(BaseModel):
         pk_field = "_id"
         collection_name = None
         fields = []
+
+
+
+class User(DatabaseModel, TelegramUser):
+    """User model."""
+
+    selected_language = "en"
+    is_admin = False
+    is_superuser = False
+    is_active = False
+
+    class Meta:
+        collection_name = "user"
+        model_name = "user"
+        pk_field = "id"
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "username",
+            "language_code",
+            "selected_language",
+            "is_bot",
+            "is_premium",
+            "is_admin",
+            "is_superuser",
+            "is_active",
+            "added_to_attachment_menu",
+            "can_join_groups",
+            "can_read_all_group_messages",
+            "supports_inline_queries",
+            "created",
+        ]
+
+    @property
+    def locale(self):
+        """Get the locale for the user."""
+
+        if not (self.selected_language or self.language_code):
+            return None
+        if not hasattr(self, "_locale"):
+            setattr(
+                self,
+                "_locale",
+                babel.core.Locale.parse(
+                    self.selected_language or self.language_code, sep="-"
+                ),
+            )
+        return getattr(self, "_locale")
