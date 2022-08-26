@@ -8,9 +8,9 @@ from aiogram import types
 from aiogram.dispatcher.filters import Text
 
 from PostCardBot.core import config
-from PostCardBot.core.decorators import Handler
+from PostCardBot.core.decorators import Handler, admin_only
 from PostCardBot.core.handlers import BaseHandler
-from PostCardBot.handlers.admin_panel import AdminPanelHandler
+# from PostCardBot.handlers.admin_panel import AdminPanelHandler
 from PostCardBot.handlers.settings import SettingsHandler
 
 _ = config.i18n.gettext
@@ -23,11 +23,22 @@ class MainMenuHandler(BaseHandler):  # noqa: N801
     class Buttons(enum.Enum):
         """Main menu buttons."""
 
+        # Main menu
         SEND_POSTCARD = _("📬 Send postcard")
         MY_POSTCARDS = _("📎 My postcards")
         HELP = _("💡 Help")
         ABOUT = _("📖 About")
-        BACK = _("🔙🏠 Main menu")
+        ADMIN_PANEL = _("🔐 Admin panel")
+
+        # Admin panel
+        POSTCARDS = _("📦 Postcards")
+        USERS = _("👥 Users")
+        STATS = _("📊 Stats")
+        ADMINISTRATORS = _("👤 Administrators")
+
+        # Back buttons
+        BACK_MAIN_MENU = _("🔙🏠 Main menu")
+        BACK_ADMIN_PANEL = _("🔙🔐 Admin panel")
 
     @Handler.message_handler(commands=["start"])
     async def start(message: types.Message, is_back=False):
@@ -63,9 +74,7 @@ class MainMenuHandler(BaseHandler):  # noqa: N801
         )
         if message.from_user.is_superuser or message.from_user.is_admin:
             button_markup.add(
-                types.KeyboardButton(
-                    _(AdminPanelHandler.Buttons.ADMIN_PANEL.value)
-                ),
+                types.KeyboardButton(_(btn_cls.ADMIN_PANEL.value)),
             )
         button_markup.add(
             types.KeyboardButton(_(btn_cls.HELP.value)),
@@ -77,11 +86,39 @@ class MainMenuHandler(BaseHandler):  # noqa: N801
             parse_mode="MarkdownV2",
         )
 
-    @Handler.message_handler(Text(equals=__(Buttons.BACK.value)))
+    @Handler.message_handler(Text(equals=__(Buttons.BACK_MAIN_MENU.value)))
     async def back(message: types.Message):
         """Back command handler."""
 
         await MainMenuHandler.start(message, is_back=True)
+
+    @Handler.message_handler(Text(equals=__(Buttons.BACK_ADMIN_PANEL.value)))
+    @Handler.message_handler(Text(equals=__(Buttons.ADMIN_PANEL.value)))
+    @admin_only
+    async def admin_panel(message: types.Message):
+        """Admin panel command handler."""
+
+        btn_cls = MainMenuHandler.Buttons
+        button_markup = types.ReplyKeyboardMarkup(
+            resize_keyboard=True, selective=True
+        )
+        button_markup.add(
+            types.KeyboardButton(__(btn_cls.POSTCARDS.value)),
+        )
+        button_markup.add(
+            types.KeyboardButton(__(btn_cls.USERS.value)),
+            types.KeyboardButton(__(btn_cls.STATS.value)),
+        )
+        if message.from_user.is_superuser:
+            button_markup.add(
+                types.KeyboardButton(__(btn_cls.ADMINISTRATORS.value)),
+            )
+        button_markup.add(
+            types.KeyboardButton(__(btn_cls.BACK_MAIN_MENU.value)),
+        )
+        await message.answer(
+            text=_("🔐 Admin panel"), reply_markup=button_markup
+        )
 
     @Handler.message_handler(Text(equals=__(Buttons.ABOUT.value)))
     async def about(message: types.Message):

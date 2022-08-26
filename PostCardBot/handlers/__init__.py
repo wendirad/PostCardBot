@@ -1,13 +1,15 @@
-from .admin_panel import AdminPanelHandler
-from .administrator import AdministratorHandler
+from .admin_panel.administrator import AdministratorHandler
+from .admin_panel.postcards import AdminPanelPostCardsHandler
+from .admin_panel.stats import StatsHandler
+from .admin_panel.users import AdminPanelUsersHandler
 from .main_menu import MainMenuHandler
 from .settings import SettingsHandler
-from .stats import StatsHandler
 
 __all__ = [
     MainMenuHandler,
     SettingsHandler,
     StatsHandler,
-    AdminPanelHandler,
     AdministratorHandler,
+    AdminPanelUsersHandler,
+    AdminPanelPostCardsHandler,
 ]

@@ -1,13 +1,14 @@
 """Core model for the PostCardBot."""
 
 
-import babel
-
 import json
 from datetime import datetime
 
-from PostCardBot.core.db import Database
 from aiogram.types import User as TelegramUser
+
+import babel
+
+from PostCardBot.core.db import Database
 
 
 class BaseModel:
@@ -170,9 +171,9 @@ class DatabaseModel(BaseModel):
         """
         Get the number of models in the database.
         """
-        return await cls.db.get_collection(
-            cls.meta.collection_name
-        ).count_documents({})
+        if not hasattr(cls, "collection"):
+            cls.collection = cls.db.get_collection(cls.meta.collection_name)
+        return cls.collection.count_documents({})
 
     @classmethod
     async def filter(cls, **kwargs):
@@ -211,7 +212,6 @@ class DatabaseModel(BaseModel):
         pk_field = "_id"
         collection_name = None
         fields = []
-
 
 
 class User(DatabaseModel, TelegramUser):
