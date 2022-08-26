@@ -26,6 +26,8 @@ class Handler:
         """
 
         def decorator(callback):
+            if isinstance(callback, staticmethod):
+                callback = callback.__func__
             cls.dp.register_message_handler(
                 callback,
                 *custom_filters,
@@ -56,6 +58,8 @@ class Handler:
         """
 
         def decorator(callback):
+            if isinstance(callback, staticmethod):
+                callback = callback.__func__
             cls.dp.register_callback_query_handler(
                 callback,
                 *custom_filters,
