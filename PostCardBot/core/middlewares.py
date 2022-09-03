@@ -33,7 +33,7 @@ class UserMiddleware(BaseMiddleware):
 
         from PostCardBot.core.model import User
 
-        if action == "process_message":
+        if action in ("process_message", "process_callback_query"):
             current_user = types.User.get_current()
             if current_user is not None:
                 user = await User(
