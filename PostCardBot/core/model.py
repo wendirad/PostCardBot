@@ -33,6 +33,10 @@ class BaseModel:
         Initialize the model.
         """
         self.kwargs = kwargs
+
+        if self.meta.pk_field not in self.meta.fields:
+            self.meta.fields.append(self.meta.pk_field)
+
         for field in self.meta.fields:
             value = kwargs.get(field)
             if value is None:
@@ -53,7 +57,9 @@ class BaseModel:
         """
         String representation of the model.
         """
-        return f"{self.meta.model_name} {getattr(self, self.pk_field)}"
+        return (
+            f"<{self.meta.model_name.upper()} {getattr(self, self.pk_field)}>"
+        )
 
     def to_dict(self):
         """
@@ -95,14 +101,6 @@ class DatabaseModel(BaseModel):
 
     db = Database()
 
-    def __init__(self, **kwargs):
-        """
-        Initialize the model.
-        """
-        super().__init__(**kwargs)
-        if self.pk_field not in self.meta.fields:
-            self.meta.fields.append(self.pk_field)
-
     def __new__(cls, *args, **kwargs):
         """
         Create a new model.
@@ -124,22 +122,32 @@ class DatabaseModel(BaseModel):
         defaults = {
             key: value
             for key, value in self.to_dict().items()
-            if key not in self.kwargs
+            if key not in self.kwargs and key != "_id"
         }
-        await self.collection.update_one(
-            {self.pk_field: pk},
-            {
-                "$set": data,
-                "$currentDate": {
-                    "lastModified": True,
+        if pk:
+            await self.collection.update_one(
+                {self.pk_field: pk},
+                {
+                    "$set": data,
+                    "$currentDate": {
+                        "lastModified": True,
+                    },
+                    "$setOnInsert": {
+                        **defaults,
+                        "created": datetime.utcnow(),
+                    },
                 },
-                "$setOnInsert": {
+                upsert=True,
+            )
+        else:
+            result = await self.collection.insert_one(
+                {
+                    **data,
                     **defaults,
                     "created": datetime.utcnow(),
-                },
-            },
-            upsert=True,
-        )
+                }
+            )
+            setattr(self, self.pk_field, result.inserted_id)
         return await self.get()
 
     async def delete(self):
@@ -180,8 +188,12 @@ class DatabaseModel(BaseModel):
         """
         Get all models from the database that match the filter.
         """
-        data = await cls.collection.find(kwargs)
-        return [cls.from_dict(d) for d in data]
+        if not hasattr(cls, "collection"):
+            cls.collection = cls.db.get_collection(cls.meta.collection_name)
+
+        data = cls.collection.find(kwargs)
+
+        return [cls.from_dict(d) async for d in data]
 
     async def get_or_create(self, **kwargs):
         """
@@ -208,7 +220,7 @@ class DatabaseModel(BaseModel):
         """
         return self.meta.pk_field
 
-    class Meta:
+    class Meta(BaseModel.Meta):
         pk_field = "_id"
         collection_name = None
         fields = []
@@ -222,7 +234,7 @@ class User(DatabaseModel, TelegramUser):
     is_superuser = False
     is_active = False
 
-    class Meta:
+    class Meta(DatabaseModel.Meta):
         collection_name = "user"
         model_name = "user"
         pk_field = "id"
