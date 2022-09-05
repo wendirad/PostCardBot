@@ -81,8 +81,7 @@ class CategoryHandler(BaseHandler):
                 [
                     types.InlineKeyboardButton(
                         text=btn_cls.POSTCARDS.value,
-                        callback_data="categorical_postcards:"
-                        + str(category.pk),
+                        callback_data="postcards:" + str(category.pk),
                     ),
                 ],
                 [
@@ -316,7 +315,7 @@ class CategoryHandler(BaseHandler):
             data["chat_id"] = callback_query.message.chat.id
 
         await Bot.get_current().send_message(
-            text=CategoryHandler.Texts.EDIT_NAME.format(
+            text=CategoryHandler.Texts.EDIT_NAME.value.format(
                 name=md.italic(data["category"].name)
             ),
             chat_id=callback_query.message.chat.id,
