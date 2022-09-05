@@ -5,6 +5,7 @@ from .admin_panel.stats import StatsHandler
 from .admin_panel.users import AdminPanelUsersHandler
 from .main_menu import MainMenuHandler
 from .settings import SettingsHandler
+from .user_postcard import UserPostCardHandler
 
 __all__ = [
     MainMenuHandler,
@@ -14,4 +15,5 @@ __all__ = [
     CategoryHandler,
     AdminPanelUsersHandler,
     AdminPanelPostCardsHandler,
+    UserPostCardHandler,
 ]
