@@ -3,8 +3,8 @@
 from typing import Any, Optional, Tuple
 
 from aiogram import types
-from aiogram.contrib.middlewares.i18n import BaseMiddleware, I18nMiddleware
-
+from aiogram.contrib.middlewares.i18n import I18nMiddleware
+from aiogram.dispatcher.middlewares import LifetimeControllerMiddleware
 
 class PostCardBotI18nMiddleware(I18nMiddleware):
     """Middleware for the PostCardBot."""
@@ -25,15 +25,15 @@ class PostCardBotI18nMiddleware(I18nMiddleware):
         return self.default
 
 
-class UserMiddleware(BaseMiddleware):
+class UserMiddleware(LifetimeControllerMiddleware):
     """Middleware for the PostCardBot User."""
 
-    async def trigger(self, action: str, args: Tuple[Any]) -> None:
+    async def pre_process(self, obj, data, *args):
         """Update user while user interacts with the bot."""
 
         from PostCardBot.core.model import User
 
-        if action in ("process_message", "process_callback_query"):
+        if isinstance(obj, (types.Message, types.CallbackQuery)):
             current_user = types.User.get_current()
             if current_user is not None:
                 user = await User(

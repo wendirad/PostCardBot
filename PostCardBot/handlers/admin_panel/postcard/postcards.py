@@ -140,8 +140,9 @@ class AdminPanelPostCardsHandler(BaseHandler):
                     message_id=thumbnail_message.message_id,
                 )
             old_postcard = data.pop("postcard", None)
-            for key, value in old_postcard.to_dict().items():
-                data.setdefault(key, value)
+            if old_postcard:
+                for key, value in old_postcard.to_dict().items():
+                    data.setdefault(key, value)
 
             postcard = await PostCard(**data).save()
 
@@ -152,6 +153,8 @@ class AdminPanelPostCardsHandler(BaseHandler):
                 reply_markup=AdminPanelPostCardsHandler.get_options(postcard),
                 parse_mode=types.ParseMode.MARKDOWN,
             )
+
+            return postcard
 
     @Handler.message_handler(
         commands=["cancel"], state=[PostCardAddForm, PostCardEditForm]
@@ -366,6 +369,8 @@ class AdminPanelPostCardsHandler(BaseHandler):
             AdminPanelPostCardsHandler.Texts.POSTCARD_ADDED.value,
             reply_markup=markup,
         )
+
+        state.finish()
         logger.info("Added postcard %s" % postcard.name)
 
     @Handler.callback_query_handler(
