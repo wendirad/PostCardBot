@@ -87,6 +87,14 @@ NOTIFIER_PASSWORD=examplepassword
 NOTIFICATION_RECIPIENT=recipientemail@mail.com
 ```
 
+### Step 6: **Write Superusers 👤**
+1. Write superusers telegram id in .env file next to `SUPERUSERS=` and save it.
+```ini
+# .env file
+
+SUPERUSERS=1234,5678,91011
+```
+
 > **Note:** Minimum configuration must look like this:
 ```ini
 # .env file
@@ -99,20 +107,13 @@ NOTIFIER=gmail
 NOFIER_EMAIL=example@mail.com
 NOTIFIER_PASSWORD=examplepassword
 NOTIFICATION_RECIPIENT=recipientemail@mail.com
+SUPERUSERS=1234,5678,91011
 ```
 
-### Step 6: **Compiling Localization Files 📋**
+### Step 7: **Compiling Localization Files 📋**
 1. Compile localization files.
 ```bash
 pybabel compile -d locale -D PostCardBot
-```
-
-### Step 7: **Write Superusers 👤**
-1. Write superusers telegram id in .env file next to `SUPERUSERS=` and save it.
-```ini
-# .env file
-
-SUPERUSERS=1234,5678,91011
 ```
 
 ### Step 8: **Run PostCardBot 🚀**
