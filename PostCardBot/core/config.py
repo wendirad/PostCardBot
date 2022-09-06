@@ -79,3 +79,7 @@ LANGUAGES = (
 i18n = PostCardBotI18nMiddleware(I18N_DOMAIN, LOCALE_PATH, default=LOCALE)
 
 middlewares = [i18n, UserMiddleware()]
+
+# Superuser
+
+SUPERUSERS = config("SUPERUSERS", cast=Csv())

@@ -6,6 +6,7 @@ from aiogram import types
 from aiogram.contrib.middlewares.i18n import I18nMiddleware
 from aiogram.dispatcher.middlewares import LifetimeControllerMiddleware
 
+
 class PostCardBotI18nMiddleware(I18nMiddleware):
     """Middleware for the PostCardBot."""
 
@@ -31,6 +32,7 @@ class UserMiddleware(LifetimeControllerMiddleware):
     async def pre_process(self, obj, data, *args):
         """Update user while user interacts with the bot."""
 
+        from PostCardBot.core import config
         from PostCardBot.core.model import User
 
         if isinstance(obj, (types.Message, types.CallbackQuery)):
@@ -39,7 +41,8 @@ class UserMiddleware(LifetimeControllerMiddleware):
                 user = await User(
                     **current_user.to_python(), is_active=True
                 ).save()
-                current_user.is_admin = user.is_admin
-                current_user.is_superuser = user.is_superuser
-                current_user.is_active = user.is_active
-            return True
+                obj.from_user.is_admin = user.is_admin
+                obj.from_user.is_superuser = (
+                    user.is_superuser or user.pk in config.SUPERUSERS
+                )
+                obj.from_user.is_active = user.is_active
