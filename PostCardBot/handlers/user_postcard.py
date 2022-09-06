@@ -15,8 +15,8 @@ from PostCardBot.core import config
 from PostCardBot.core.decorators import Handler
 from PostCardBot.core.handlers import BaseHandler
 from PostCardBot.core.helpers import create_postcard
-from PostCardBot.models import Category, PostCard
 from PostCardBot.handlers.main_menu import MainMenuHandler
+from PostCardBot.models import Category, PostCard
 
 _ = config.i18n.gettext
 __ = config.i18n.lazy_gettext
@@ -54,12 +54,40 @@ class UserPostCardHandler(BaseHandler):
         SELECT_CATEGORY = _("Select category")
         SELECT_POSTCARD_TEMPLATE = _("Select postcard template")
 
-        ENTER_SENDER_NAME = _("Enter sender name")
-        ENTER_RECEIVER_NAME = _("Enter receiver name")
+        ENTER_SENDER_NAME = _(
+            "Enter sender name \n\ndefault: *{name}*\n"
+            "/skip to use default name. /cancel to cancel."
+        )
+        ENTER_RECEIVER_NAME = _("Enter receiver name\n\n/cancel to cancel.")
 
-        CONFIRM_SEND_POSTCARD = ("Send this postcard?")
+        CONFIRM_SEND_POSTCARD = "Send this postcard?"
         POSTCARD_CAPTION = _("Postcard from")
         POSTCARD_SEND_CANCELED = _("Postcard send canceled")
+        POSTCARD_READY = _("Your postcard is ready")
+
+        OPERATION_CANCELLED = _("Operation cancelled.")
+
+    @Handler.message_handler(commands=["cancel"], state=SendPostCard)
+    async def cancel_handler(message: types.Message, state: FSMContext):
+        """Cancel handler."""
+
+        await state.finish()
+        await message.reply(
+            MainMenuHandler.Texts.OPERATION_CANCELLED.value,
+            reply=False,
+        )
+
+    @Handler.message_handler(commands=["skip"], state=[SendPostCard.from_user])
+    async def skip_from_user(message: types.Message, state: FSMContext):
+        """Skip from user name."""
+
+        async with state.proxy() as data:
+            data["from_user"] = message.from_user.first_name
+
+        await SendPostCard.next()
+        await message.answer(
+            UserPostCardHandler.Texts.ENTER_RECEIVER_NAME.value
+        )
 
     @Handler.message_handler(Text(equals=__(Buttons.SEND_POSTCARD.value)))
     async def send_postcard_handler(message: types.Message):
@@ -124,7 +152,9 @@ class UserPostCardHandler(BaseHandler):
             )
 
     @Handler.callback_query_handler(Text(startswith="send_postcard:"))
-    async def send_postcard_handler(call: CallbackQuery, state: FSMContext):
+    async def send_postcard_image_handler(
+        call: CallbackQuery, state: FSMContext
+    ):
         """Send postcard handler."""
 
         postcard_id = ObjectId(call.data.split(":")[1])
@@ -137,7 +167,9 @@ class UserPostCardHandler(BaseHandler):
 
             await SendPostCard.from_user.set()
             await call.message.answer(
-                text=UserPostCardHandler.Texts.ENTER_SENDER_NAME.value,
+                text=UserPostCardHandler.Texts.ENTER_SENDER_NAME.value.format(
+                    name=types.User.get_current().first_name
+                ),
                 reply_markup=types.ReplyKeyboardRemove(),
                 parse_mode=types.ParseMode.MARKDOWN,
             )
@@ -154,8 +186,11 @@ class UserPostCardHandler(BaseHandler):
 
         async with state.proxy() as data:
             data["from_user"] = message.text
+
         await SendPostCard.next()
-        await message.answer(UserPostCardHandler.Texts.ENTER_RECEIVER_NAME.value)
+        await message.answer(
+            UserPostCardHandler.Texts.ENTER_RECEIVER_NAME.value
+        )
 
     @Handler.message_handler(
         content_types=types.ContentType.TEXT, state=SendPostCard.to_user
@@ -172,7 +207,6 @@ class UserPostCardHandler(BaseHandler):
             new_postcard = await create_postcard(
                 data["postcard"].image, data["from_user"], data["to_user"]
             )
-
 
             prepared_message = await message.answer_photo(
                 photo=new_postcard,
@@ -199,21 +233,25 @@ class UserPostCardHandler(BaseHandler):
     ):
         """Confirm send postcard handler."""
 
-
         async with state.proxy() as data:
-            await call.message.edit_caption(
-                caption=UserPostCardHandler.Texts.POSTCARD_CAPTION.value,
-                reply_markup=None,
-            )
-            call.answer()
-            await state.finish()
-
             logger.info(
                 f"Postcard sent from {data['from_user']} to {data['to_user']}"
-                f"Using template {data['postcard'].name}({data['postcard'].pk})"
+                f"Using  {data['postcard'].name}({data['postcard'].pk})"
             )
 
-            await MainMenuHandler.start(call.message, is_back=True)
+        await call.answer()
+
+        await state.finish()
+
+        await call.message.edit_caption(
+            caption=UserPostCardHandler.Texts.POSTCARD_CAPTION.value,
+            reply_markup=None,
+        )
+        await Bot.get_current().send_message(
+            chat_id=call.from_user.id,
+            text=UserPostCardHandler.Texts.POSTCARD_READY.value,
+            reply_markup=MainMenuHandler.get_options(call.from_user),
+        )
 
     @Handler.callback_query_handler(
         Text(startswith="cancel_send_postcard"),
@@ -224,31 +262,11 @@ class UserPostCardHandler(BaseHandler):
     ):
         """Cancel send postcard handler."""
 
-        # await call.message.delete()
-        # await state.finish()
+        await call.message.delete()
+        await state.finish()
 
         await Bot.get_current().send_message(
             chat_id=call.from_user.id,
             text=__(UserPostCardHandler.Texts.POSTCARD_SEND_CANCELED.value),
-            reply_markup=types.ReplyKeyboardRemove(),
+            reply_markup=MainMenuHandler.get_options(call.from_user),
         )
-
-        dp = Dispatcher.get_current()
-
-        await dp.process_update(
-            types.Update(
-                update_id=call.message.message_id,
-                message=types.Message(
-                    message_id=call.message.message_id,
-                    chat=types.Chat(
-                        id=call.from_user.id,
-                        type=call.chat_instance,
-                        username=call.from_user.username,
-                    ),
-                    text="/start",
-                    kwargs={"is_back": True},
-                ),
-            )
-        )
-
-
