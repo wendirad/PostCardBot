@@ -4,7 +4,7 @@
 
 from pathlib import Path
 
-from decouple import config
+from decouple import Csv, config
 from loguru import logger
 from notifiers.logging import NotificationHandler
 
@@ -30,6 +30,8 @@ DATABASE_NAME = config("DATABASE_NAME")
 DATABASE_SELECTION_TIMEOUT = config(
     "DATABASE_SELECTION_TIMEOUT", cast=int, default=10 * 1000
 )
+
+STORAGE_DATABASE_NAME = config("STORAGE_DATABAES_NAME", default="aiogram_fsm")
 
 # Logging
 

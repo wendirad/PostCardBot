@@ -107,7 +107,15 @@ NOTIFICATION_RECIPIENT=recipientemail@mail.com
 pybabel compile -d locale -D PostCardBot
 ```
 
-### Step 7: **Run PostCardBot 🚀**
+### Step 7: **Write Superusers 👤**
+1. Write superusers telegram id in .env file next to `SUPERUSERS=` and save it.
+```ini
+# .env file
+
+SUPERUSERS=1234,5678,91011
+```
+
+### Step 8: **Run PostCardBot 🚀**
 1. Run PostCardBot.
 ```bash
 python3 -m PostCardBot
@@ -117,6 +125,7 @@ python3 -m PostCardBot
 - `API_TOKEN` - Telegram bot token.
 - `DATABASE_URL` - MongoDB dns link.
 - `DATABASE_NAME` - MongoDB database name.
+- `STORAGE_DATABASE_NAME` - aiogram FSM storage database name. Default: 'aiogram_fsm'
 - `LOG_FILE_NAME` - Log file name.
 - `NOTIFIER` - Notifier name.
 - `NOTIFIER_EMAIL` - Notifier email.
@@ -125,7 +134,7 @@ python3 -m PostCardBot
 - `LOG_ROTATION_SIZE` - Log rotation size.
 - `DATABASE_SELECTION_TIMEOUT` - Database selection timeout. Default: 10 seconds.
 - `LOCALE` - Default locale. Default: `en`.
-
+- `SUPERUSERS` - Write bot superusers.
 
 ## **License**
 <!-- Apache -->
