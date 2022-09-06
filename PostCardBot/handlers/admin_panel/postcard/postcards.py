@@ -146,21 +146,20 @@ class AdminPanelPostCardsHandler(BaseHandler):
 
             postcard = await PostCard(**data).save()
 
-            await Bot.get_current().send_photo(
-                chat_id=message.chat.id,
+            await message.answer_photo(
                 photo=postcard.thumbnail,
                 caption=postcard.name + "\n\n" + postcard.description,
                 reply_markup=AdminPanelPostCardsHandler.get_options(postcard),
                 parse_mode=types.ParseMode.MARKDOWN,
             )
-
+            await state.finish()
             return postcard
 
     @Handler.message_handler(
         commands=["cancel"], state=[PostCardAddForm, PostCardEditForm]
     )
     @admin_only
-    async def cancel_handler(self, message: types.Message, state: FSMContext):
+    async def cancel_handler(message: types.Message, state: FSMContext):
         """Cancel handler."""
 
         await state.finish()
@@ -357,7 +356,7 @@ class AdminPanelPostCardsHandler(BaseHandler):
         postcard = await AdminPanelPostCardsHandler.save_updated_data(
             message, state
         )
-
+        PostCardAddForm.next()
         btn_cls = AdminPanelPostCardsHandler.Buttons
         markup = types.ReplyKeyboardMarkup(
             resize_keyboard=True, one_time_keyboard=True
@@ -370,7 +369,6 @@ class AdminPanelPostCardsHandler(BaseHandler):
             reply_markup=markup,
         )
 
-        state.finish()
         logger.info("Added postcard %s" % postcard.name)
 
     @Handler.callback_query_handler(
@@ -471,8 +469,6 @@ class AdminPanelPostCardsHandler(BaseHandler):
         """Postcard image."""
 
         await AdminPanelPostCardsHandler.save_updated_data(message, state)
-
-        await state.finish()
 
         btn_cls = AdminPanelPostCardsHandler.Buttons
         markup = types.ReplyKeyboardMarkup(

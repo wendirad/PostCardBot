@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from aiogram import Bot, Dispatcher, types
+from aiogram import Bot
 
 from PIL import Image, ImageDraw
 
@@ -12,11 +12,9 @@ async def create_postcard(postcard_image, from_user, to_user):
     image_out = BytesIO()
 
     telegram_image = await (
-        (
-            await Bot.get_current()
-            .get_file(postcard_image)
+        (await Bot.get_current().get_file(postcard_image)).download(
+            destination_file=image_byte
         )
-        .download(destination_file=image_byte)
     )
 
     image = Image.open(telegram_image)

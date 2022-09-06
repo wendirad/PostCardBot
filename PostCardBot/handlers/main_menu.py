@@ -32,7 +32,7 @@ class MainMenuHandler(BaseHandler):  # noqa: N801
 
         # Admin panel
         CATEGORIES = _("📁 Categories")
-        USERS = _("👥 Users")
+
         STATS = _("📊 Stats")
         ADMINISTRATORS = _("👤 Administrators")
 
@@ -75,6 +75,28 @@ class MainMenuHandler(BaseHandler):  # noqa: N801
             "Check bot information\."
         )
 
+    def get_options(user):
+        btn_cls = MainMenuHandler.Buttons
+        button_markup = types.ReplyKeyboardMarkup(
+            resize_keyboard=True, selective=True
+        )
+        button_markup.add(
+            types.KeyboardButton(_(btn_cls.SEND_POSTCARD.value)),
+            types.KeyboardButton(_(btn_cls.MY_POSTCARDS.value)),
+        )
+        button_markup.add(
+            types.KeyboardButton(_(SettingsHandler.Buttons.SETTINGS.value)),
+        )
+        if user.is_superuser or user.is_admin:
+            button_markup.add(
+                types.KeyboardButton(_(btn_cls.ADMIN_PANEL.value)),
+            )
+        button_markup.add(
+            types.KeyboardButton(_(btn_cls.HELP.value)),
+            types.KeyboardButton(_(btn_cls.ABOUT.value)),
+        )
+        return button_markup
+
     @Handler.message_handler(commands=["start"])
     async def start(message: types.Message, is_back=False):
         """Start command handler."""
@@ -90,27 +112,9 @@ class MainMenuHandler(BaseHandler):  # noqa: N801
         )
 
         btn_cls = MainMenuHandler.Buttons
-        button_markup = types.ReplyKeyboardMarkup(
-            resize_keyboard=True, selective=True
-        )
-        button_markup.add(
-            types.KeyboardButton(_(btn_cls.SEND_POSTCARD.value)),
-            types.KeyboardButton(_(btn_cls.MY_POSTCARDS.value)),
-        )
-        button_markup.add(
-            types.KeyboardButton(_(SettingsHandler.Buttons.SETTINGS.value)),
-        )
-        if message.from_user.is_superuser or message.from_user.is_admin:
-            button_markup.add(
-                types.KeyboardButton(_(btn_cls.ADMIN_PANEL.value)),
-            )
-        button_markup.add(
-            types.KeyboardButton(_(btn_cls.HELP.value)),
-            types.KeyboardButton(_(btn_cls.ABOUT.value)),
-        )
         await message.answer(
             text=welcome_text if not is_back else btn_cls.MAIN_MENU.value,
-            reply_markup=button_markup,
+            reply_markup=MainMenuHandler.get_options(message.from_user),
             parse_mode="MarkdownV2",
         )
 
@@ -132,9 +136,6 @@ class MainMenuHandler(BaseHandler):  # noqa: N801
         )
         button_markup.add(
             types.KeyboardButton(__(btn_cls.CATEGORIES.value)),
-        )
-        button_markup.add(
-            types.KeyboardButton(__(btn_cls.USERS.value)),
             types.KeyboardButton(__(btn_cls.STATS.value)),
         )
         if message.from_user.is_superuser:

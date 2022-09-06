@@ -376,23 +376,21 @@ class CategoryHandler(BaseHandler):
         """confirm category deletion."""
 
         btn_cls = CategoryHandler.Buttons
-        markup = (
-            types.InlineKeyboardMarkup(
-                inline_keyboard=[
-                    [
-                        types.InlineKeyboardButton(
-                            text=btn_cls.YES.value,
-                            callback_data="confirm_delete_category:"
-                            + callback_query.data.split(":")[1],
-                        ),
-                        types.InlineKeyboardButton(
-                            text=btn_cls.NO.value,
-                            callback_data="cancel_delete_category:"
-                            + callback_query.data.split(":")[1],
-                        ),
-                    ],
+        markup = types.InlineKeyboardMarkup(
+            inline_keyboard=[
+                [
+                    types.InlineKeyboardButton(
+                        text=btn_cls.YES.value,
+                        callback_data="confirm_delete_category:"
+                        + callback_query.data.split(":")[1],
+                    ),
+                    types.InlineKeyboardButton(
+                        text=btn_cls.NO.value,
+                        callback_data="cancel_delete_category:"
+                        + callback_query.data.split(":")[1],
+                    ),
                 ],
-            ),
+            ],
         )
         await Bot.get_current().edit_message_text(
             text=CategoryHandler.Texts.CONFIRM_DELETE.value,
