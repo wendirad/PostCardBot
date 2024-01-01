@@ -142,14 +142,4 @@ python3 -m PostCardBot
 <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0 </a>
 
 
-<p align="center">
-  <img width="150" height="150" src="https://www.backostech.com/wp-content/uploads/2022/08/cropped-BackosLogo.png">
-  <h1 align="center"><a href="https://backostech.com">𝔹𝕒𝕔𝕜𝕠𝕤 𝕋𝕖𝕔𝕙𝕟𝕠𝕝𝕠𝕘𝕚𝕖𝕤</a></h1>
-
-  ```
-                                                ᴀ ᴛᴇᴄʜ ʏᴏᴜ ᴄᴀɴ ᴛʀᴜsᴛ
-  ```
-</p>
-
-
 Build with [aiogram](https://github.com/aiogram/aiogram).
